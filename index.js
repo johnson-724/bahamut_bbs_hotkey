@@ -53,6 +53,9 @@ class PostNode {
   }
 }
 
+const currentQueryString = window.location.search;
+const params = new URLSearchParams(currentQueryString);
+const currentPage = params.get("page");
 (function () {
   console.log("bahamut hotkey loading ...");
   switchScript();
@@ -82,6 +85,28 @@ function getPostList() {
 function registerListHotKey(list) {
   document.addEventListener("keydown", function (event) {
     const keyCode = event.key;
+    const shiftKey = event.shiftKey;
+
+    if (shiftKey && keyCode === "ArrowRight") {
+      window.location.hash = "";
+
+      if (currentPage === null) {
+        window.location.search = window.location.search + "&page=2";
+      } else {
+        window.location.href = window.location.href.replace(
+          "page=" + currentPage,
+          "page=" + (parseInt(currentPage) + 1)
+        );
+      }
+
+      return;
+    }
+
+    if (shiftKey && keyCode === "ArrowLeft") {
+      window.history.back();
+
+      return;
+    }
 
     switch (keyCode) {
       case "ArrowRight":
@@ -93,7 +118,7 @@ function registerListHotKey(list) {
         event.preventDefault();
         current = list.currentNode();
         list.prev();
-        
+
         continueB(current, list);
         break;
       case "ArrowDown":
@@ -137,16 +162,28 @@ function getPostListOnCPage() {
 function registerPostHotKey(list) {
   document.addEventListener("keydown", function (event) {
     const keyCode = event.key;
+    const shiftKey = event.shiftKey;
+    if (shiftKey && keyCode === "ArrowRight") {
+      window.location.hash = "";
+
+      if (currentPage === null) {
+        window.location.search = window.location.search + "&page=2";
+      } else {
+        window.location.href = window.location.href.replace(
+          "page=" + currentPage,
+          "page=" + (parseInt(currentPage) + 1)
+        );
+      }
+
+      return;
+    }
+
+    if (shiftKey && keyCode === "ArrowLeft") {
+      window.history.back();
+
+      return;
+    }
     switch (keyCode) {
-      case "ArrowLeft":
-        event.preventDefault();
-        history.back();
-        break;
-      case "ArrowRight":
-        event.preventDefault();
-        console.log("right");
-        // jumpToPost(list.currentNode());
-        break;
       case "ArrowUp":
         event.preventDefault();
         current = list.currentNode();
